@@ -3,13 +3,15 @@
 # Makes programs, downloads sample data, trains a GloVe model, and then evaluates it.
 # One optional argument can specify the language used for eval script: matlab, octave or [default] python
 
-DATADIR=embeddings
+#DATADIR=embeddings
+DATADIR=D:/KDiSE/EVPI/GloVe-1.2
 
-CORPUS=stackexchange/stackexchange_datadump.txt
+#CORPUS=stackexchange/stackexchange_datadump.txt
+CORPUS = D:/KDiSE/EVPI/ranking_clarification_questions/stackexchange/stackexchange_datadump.txt
 VOCAB_FILE=$DATADIR/vocab.txt
 COOCCURRENCE_FILE=$DATADIR/cooccurrence.bin
 COOCCURRENCE_SHUF_FILE=$DATADIR/cooccurrence.shuf.bin
-BUILDDIR=GloVe-1.2/build
+BUILDDIR=D:/KDiSE/EVPI/GloVe-1.2/build
 SAVE_FILE=$DATADIR/vectors
 VERBOSE=2
 MEMORY=4.0

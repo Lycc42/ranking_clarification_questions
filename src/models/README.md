@@ -58,6 +58,71 @@ Neural(p,q,a)
 * Set "MODEL=evpi" in ranking_clarification_questions/src/models/run_main.sh
 * cd ranking_clarification_questions; sh src/models/run_main.sh
 
-# Runing evaluation
+# Running evaluation
+
+* cd ranking_clarification_questions; sh src/evaluation/run_evaluation.sh
+
+# 先决条件
+
+* 安装lasagne：http://lasagne.readthedocs.io/en/latest/user/installation.html
+* 安装numpy，scipy
+* 版本信息：
+
+Python 2.7.5
+
+Theano 0.9.0dev5
+
+Lasagne 0.2.dev1
+
+Cuda 8.0.44
+
+Cudnn 5.1
+
+# 加载数据 
+
+从askubuntu.com加载数据
+
+* 在ranking_clarification_questions/src/models/run_load_data.sh中设置 "SITE_NAME=askubuntu.com" 
+* cd ranking_clarification_questions; sh src/models/run_load_data.sh
+
+从unix.stackexchange.com加载数据
+
+* 在ranking_clarification_questions/src/models/run_load_data.sh中设置 "SITE_NAME=unix.stackexchange.com" 
+* cd ranking_clarification_questions; sh src/models/run_load_data.sh
+// ; 是命令分隔符，用于在一行中运行多个命令。sh src/models/run_load_data.sh 是运行 run_load_data.sh 脚本的命令
+
+从superuser.com加载数据
+
+* 在ranking_clarification_questions/src/models/run_load_data.sh中设置 "SITE_NAME=superuser.com" 
+* cd ranking_clarification_questions; sh src/models/run_load_data.sh
+
+合并来自三个域的数据
+
+* cd ranking_clarification_questions; sh src/models/run_combine_domains.sh
+* cat data/askubuntu.com/human_annotations data/unix.stackexchange.com/human_annotations data/superuser.com/human_annotations > askubuntu_unix_superuser/human_annotations
+
+# 在合并数据上运行神经基线
+
+Neural(p,q)
+
+* 在ranking_clarification_questions/src/models/run_main.sh中设置 "MODEL=baseline_pq"
+* cd ranking_clarification_questions; sh src/models/run_main.sh
+
+Neural(p,a)
+
+* 在ranking_clarification_questions/src/models/run_main.sh中设置 "MODEL=baseline_pa"
+* cd ranking_clarification_questions; sh src/models/run_main.sh
+
+Neural(p,q,a)
+
+* 在ranking_clarification_questions/src/models/run_main.sh中设置 "MODEL=baseline_pqa"
+* cd ranking_clarification_questions; sh src/models/run_main.sh
+
+# 在合并数据上运行EVPI模型
+
+* 在ranking_clarification_questions/src/models/run_main.sh中设置 "MODEL=evpi"
+* cd ranking_clarification_questions; sh src/models/run_main.sh
+
+# 运行评估
 
 * cd ranking_clarification_questions; sh src/evaluation/run_evaluation.sh

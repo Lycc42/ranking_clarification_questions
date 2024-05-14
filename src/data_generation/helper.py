@@ -11,6 +11,10 @@ def get_tokens(text):
     text = BeautifulSoup(text.encode('utf-8').decode('ascii', 'ignore')).text
     return word_tokenize(str(text).lower())
 
+def get_sent_tokens(text):
+    text = BeautifulSoup(text.encode('utf-8').decode('ascii', 'ignore')).text
+    return sent_tokenize(str(text).lower())
+
 def get_indices(tokens, vocab):
     indices = np.zeros([len(tokens)], dtype=np.int32)
     UNK = "<unk>"
