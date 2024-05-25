@@ -7,7 +7,7 @@
 DATADIR=D:/KDiSE/EVPI/GloVe-1.2
 
 #CORPUS=stackexchange/stackexchange_datadump.txt
-CORPUS = D:/KDiSE/EVPI/ranking_clarification_questions/stackexchange/stackexchange_datadump.txt
+CORPUS=D:/KDiSE/EVPI/ranking_clarification_questions/stackexchange/stackexchange_datadump.txt
 VOCAB_FILE=$DATADIR/vocab.txt
 COOCCURRENCE_FILE=$DATADIR/cooccurrence.bin
 COOCCURRENCE_SHUF_FILE=$DATADIR/cooccurrence.shuf.bin

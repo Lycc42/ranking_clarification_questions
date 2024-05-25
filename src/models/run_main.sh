@@ -1,7 +1,15 @@
 #!/bin/bash
 
+#source /fs/clip-amr/gpu_virtualenv/bin/activate
+#source source C:/Users/Student/.conda/envs/ranking_clarification_questions/bin/activate # activate the environment
+#source C:/ProgramData/anaconda3/etc/profile.d/conda.sh
+#source /cygdrive/c/ProgramData/anaconda3/etc/profile.d/conda.sh
+#source /c/ProgramData/anaconda3/etc/profile.d/conda.sh
+#conda activate ranking_clarification_questions
+
 DATA_DIR=data
-EMB_DIR=embeddings
+#EMB_DIR=embeddings
+EMB_DIR=D:/KDiSE/EVPI/GloVe-1.2
 #SITE_NAME=askubuntu.com
 #SITE_NAME=unix.stackexchange.com
 #SITE_NAME=superuser.com
@@ -16,11 +24,14 @@ MODEL=evpi
 
 mkdir -p $OUTPUT_DIR
 
-source /fs/clip-amr/gpu_virtualenv/bin/activate
-module add cuda/8.0.44
-module add cudnn/v5.1
 
-THEANO_FLAGS=floatX=float32,device=gpu python $SCRIPTS_DIR/main.py \
+
+#module add cuda/8.0.4
+#module add cudnn/v7.1.4
+
+#THEANO_FLAGS=floatX=float32,device=gpu python $SCRIPTS_DIR/main.py \
+# shellcheck disable=SC2125
+THEANO_FLAGS=floatX=float32,device=gpu,optimizer=fast_compile python $SCRIPTS_DIR/main.py \
                                                 --post_ids_train $DATA_DIR/$SITE_NAME/post_ids_train.p \
                                                 --post_vectors_train $DATA_DIR/$SITE_NAME/post_vectors_train.p \
 												--ques_list_vectors_train $DATA_DIR/$SITE_NAME/ques_list_vectors_train.p \

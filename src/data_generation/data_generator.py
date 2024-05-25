@@ -58,6 +58,7 @@ def main(args):
 	post_parser = PostParser(args.posts_xml)
 	post_parser.parse()
 	posts = post_parser.get_posts()
+	# posts = {postId: post for postId, post in post_parser.parse()}
 	print 'Size: ', len(posts)
 	print 'Done! Time taken ', time.time() - start_time
 	print
@@ -67,6 +68,7 @@ def main(args):
 	posthistory_parser = PostHistoryParser(args.posthistory_xml)
 	posthistory_parser.parse()
 	posthistories = posthistory_parser.get_posthistories()
+	# posthistories = {postId: posthistory for postId, posthistory in posthistory_parser.parse()}
 	print 'Size: ', len(posthistories)
 	print 'Done! Time taken ', time.time() - start_time
 	print
@@ -77,6 +79,8 @@ def main(args):
 	comment_parser.parse_all_comments()
 	question_comments = comment_parser.get_question_comments()
 	all_comments = comment_parser.get_all_comments()
+	# question_comments = {postId: comments for postId, comments in comment_parser.get_question_comments()}
+	# all_comments = {postId: comments for postId, comments in comment_parser.parse_all_comments()}
 	print 'Size: ', len(question_comments)
 	print 'Done! Time taken ', time.time() - start_time
 	print

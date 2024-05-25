@@ -1,7 +1,8 @@
 #!/bin/bash
 
 DATA_DIR=data
-EMB_DIR=embeddings
+#EMB_DIR=embeddings
+EMB_DIR=D:/KDiSE/EVPI/GloVe-1.2
 #SITE_NAME=askubuntu.com
 #SITE_NAME=unix.stackexchange.com
 SITE_NAME=superuser.com

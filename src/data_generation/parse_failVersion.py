@@ -1,3 +1,6 @@
+# coding=utf-8
+import json
+import os
 import sys
 import cPickle as p
 import xml.etree.ElementTree as ET
@@ -105,6 +108,7 @@ class PostParser:
 		context = iter(context)
 		event, root = next(context)
 		for event, post in context:
+		# for event, post in sorted(context, key=lambda x: x[1].attrib['Id']):
 			if event == 'end' and post.tag == 'row':
 				postId = post.attrib['Id']
 				postTypeId = int(post.attrib['PostTypeId'])
@@ -137,9 +141,20 @@ class PostParser:
 					parentId = None
 				body = get_tokens(post.attrib['Body'])
 				sent_tokens = get_sent_tokens(post.attrib['Body'])
-				self.posts[postId] = Post(title, body, sent_tokens, postTypeId, accepted_answerId, answer_count,
-										  owner_userId, creation_date, parentId, closed_date)
+				# self.posts[postId] = Post(title, body, sent_tokens, postTypeId, accepted_answerId, answer_count,
+				# 						  owner_userId, creation_date, parentId, closed_date)
 				# root.clear()
+
+				# yield postId, self.posts[postId]
+
+				# 创建Post对象并将其__dict__写入文件
+				post_obj = Post(title, body, sent_tokens, postTypeId, accepted_answerId, answer_count, owner_userId,
+								creation_date, parentId, closed_date)
+				with open(os.path.join('D:/KDiSE/EVPI/ranking_clarification_questions/data/dataGenerate_Parse',
+									   'posts.json'), 'a') as f:
+					json.dump({postId: post_obj.__dict__}, f)
+
+
 				post.clear()  # free memory
 
 	def get_posts(self):
@@ -163,10 +178,10 @@ class CommentParser:
 
 	def __init__(self, filename):
 		self.filename = filename
-		self.question_comments = defaultdict(list)
-		self.question_comment = defaultdict(None)
-		self.comment = defaultdict(None)
-		self.all_comments = defaultdict(list)
+		# self.question_comments = defaultdict(list)
+		self.question_comment = []
+		self.comment = []
+		# self.all_comments = defaultdict(list)
 
 	def domain_words(self):
 		return ['duplicate', 'upvote', 'downvote', 'vote', 'related', 'upvoted', 'downvoted', 'edit']
@@ -236,6 +251,7 @@ class CommentParser:
 		context = iter(context)
 		event, root = next(context)
 		for event, comment in context:
+		# for event, comment in sorted(context, key=lambda x: x[1].attrib['PostId']):
 			if event == 'end' and comment.tag == 'row':
 				postId = comment.attrib['PostId']
 				text = comment.attrib['Text']
@@ -254,15 +270,52 @@ class CommentParser:
 				if question:
 					question_comment = QuestionComment(question, creation_date, userId)
 					self.question_comments[postId].append(question_comment)
+
+				# yield postId, (self.question_comments[postId], self.all_comments[postId])
+
+				comment.clear()  # free memory
+
+	def parse_all_comments(self):
+		context = ET.iterparse(self.filename, events=('start', 'end'))
+		context = iter(context)
+		event, root = next(context)
+
+		for event, comment in context:
+		# for event, comment in sorted(context, key=lambda x: x[1].attrib['PostId']):
+			if event == 'end' and comment.tag == 'row':
+				postId = comment.attrib['PostId']
+				text = comment.attrib['Text']
+				try:
+					userId = comment.attrib['UserId']
+				except:
+					userId = None
+				creation_date = datetime.datetime.strptime(comment.attrib['CreationDate'].split('.')[0],
+														   "%Y-%m-%dT%H:%M:%S")
+				comment_tokens = self.get_comment_tokens(text)
+				if not comment_tokens:
+					continue
+				curr_comment = Comment(comment_tokens, creation_date, userId)
+				question = self.get_question(text)
+				if question:
+					question_comment = QuestionComment(question, creation_date, userId)
+
+				# 将数据写入文件
+				with open(os.path.join('D:/KDiSE/EVPI/ranking_clarification_questions/data/dataGenerate_Parse',
+									   'question_comments.json'), 'a') as f:
+					json.dump({postId: question_comment.__dict__}, f)
+				with open(os.path.join('D:/KDiSE/EVPI/ranking_clarification_questions/data/dataGenerate_Parse',
+									   'all_comments.json'), 'a') as f:
+					json.dump({postId: curr_comment.__dict__}, f)
+
 				comment.clear()  # free memory
 
 # 问题评论
-	def get_question_comments(self):
-		return self.question_comments
+# 	def get_question_comments(self):
+# 		return self.question_comments
 
 # 所有评论
-	def get_all_comments(self):
-		return self.all_comments
+# 	def get_all_comments(self):
+# 		return self.all_comments
 
 class PostHistory:
 	def __init__(self):
@@ -300,6 +353,7 @@ class PostHistoryParser:
 		context = iter(context)
 		event, root = next(context)
 		for event, posthistory in context:
+		# for event, posthistory in sorted(context, key=lambda x: x[1].attrib['PostId']):
 			if event == 'end' and posthistory.tag == 'row':
 				posthistory_typeid = posthistory.attrib['PostHistoryTypeId']
 				postId = posthistory.attrib['PostId']
@@ -312,12 +366,15 @@ class PostHistoryParser:
 					self.posthistories[postId].edit_dates.append(
 						datetime.datetime.strptime(posthistory.attrib['CreationDate'].split('.')[0],
 												   "%Y-%m-%dT%H:%M:%S"))
+
+				yield postId, self.posthistories[postId]
+
 				posthistory.clear()  # free memory
 
 		for postId in list(self.posthistories.keys()):
 			if not self.posthistories[postId].edited_posts:
 				del self.posthistories[postId]
-		
+
 	def get_posthistories(self):
 		return self.posthistories
 

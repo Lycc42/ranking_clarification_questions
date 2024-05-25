@@ -2,7 +2,7 @@ import sys
 from nltk.tokenize import word_tokenize
 from nltk.tokenize import sent_tokenize
 import nltk
-nltk.download('punkt')
+# nltk.download('punkt') 已在配服务器环境时下载
 import numpy as np
 from BeautifulSoup import BeautifulSoup
 import re
